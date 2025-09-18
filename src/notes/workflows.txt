@@ -1,0 +1,52 @@
+Creating a D&D Campaign Generator with Writer Workflows
+
+As a Dungeon Master using Writer AI Framework, automating campaign creation saves hours of prep time.
+
+What is a Writer Workflow for D&D Campaign Creation?
+
+A workflow is a sequence of connected blocks, where each block performs a specific action. Think of it like a chain reaction - when one block completes its task, it triggers the next block in line. For D&D campaigns, this means: Character Creation → World Building → Quest Generation → Encounter Design. Each connection between blocks can be either a success (green) or error (red) path, letting you control what happens next.
+
+You can access any block's output in the next block using @{result} - this lets you pass character details through your campaign generation steps.
+
+Campaign Creation Workflow for 3 Characters:
+
+1. **Character Generation Block (For-Each Loop Block)**: 
+   - Loops 3 times to create unique characters
+   - Input: Character class preferences (Wizard, Rogue, Fighter)
+   - Output: @{character_name}, @{character_backstory}, @{character_stats}
+
+2. **World Building Block (Chat Completion Block)**:
+   - Input: "@{character_1}, @{character_2}, @{character_3} need a world"
+   - Generates the campaign setting based on character backgrounds
+   - Output: @{world_description}, @{starting_location}
+
+3. **Quest Generator Block (Completion Block)**:
+   - Takes @{world_description} and character motivations
+   - Creates interconnected quest lines for all 3 characters
+   - Output: @{main_quest}, @{side_quests}
+
+4. **NPC Generator Block (HTTP Request Block)**:
+   - Calls D&D API for random NPCs
+   - Customizes them based on @{world_description}
+   - Output: @{npc_roster}
+
+5. **Encounter Balance Block (Parse JSON Block)**:
+   - Input: Character levels and party composition
+   - Calculates CR (Challenge Rating) for 3-player party
+   - Output: @{balanced_encounters}
+
+6. **Session Notes Block (Set State Block)**:
+   - Stores all generated content: @{characters}, @{world}, @{quests}
+   - Maintains campaign continuity between sessions
+
+7. **Campaign Summary Block (Return Value Block)**:
+   - Compiles everything into a ready-to-run campaign
+   - Returns formatted session notes for the DM
+
+Writer Workflows is currently in beta, which means we're still actively improving features and adding new D&D-specific blocks.
+
+This workflow saves DMs hours by automating campaign prep. Once set up, it generates consistent, balanced content for your 3-player party every session.
+
+To reference character details in quest generation, use @{character_1_backstory} wrapped in quotes: "The quest begins when @{character_1_name} receives a letter about @{character_1_backstory}."
+
+Now you have an automated D&D campaign generator that creates personalized adventures for your 3-character party!
