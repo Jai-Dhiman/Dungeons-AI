@@ -1,0 +1,30 @@
+{
+  "name": "dungeons-ai",
+  "version": "1.0.0",
+  "description": "RAG service for AI Dungeon Master (TS, Weaviate, Voyage)",
+  "main": "dist/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "ingest": "tsx src/ingest.ts --dir ./data",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "uuid": "^13.0.0",
+    "weaviate-ts-client": "^2.2.0",
+    "zod": "^4.1.9"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

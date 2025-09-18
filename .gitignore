@@ -82,3 +82,5 @@ dmypy.json
 # Project specific
 src/results/*.md
 !src/results/.gitkeep 
+
+node_modules/

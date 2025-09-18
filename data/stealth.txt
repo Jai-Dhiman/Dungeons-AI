@@ -1,0 +1,3 @@
+Stealth Checks
+
+To avoid detection, make a Dexterity (Stealth) check. The DM compares it to a creature’s passive Perception or an active Wisdom (Perception) check. You usually need cover, darkness, or distraction to hide. Moving while hidden can require new checks, and making noise or entering bright light may reveal your position.

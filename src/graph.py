@@ -23,7 +23,8 @@ from state import (
 from utils import (
     load_and_format_urls,
     read_dictation_file,
-    format_sections
+    format_sections,
+    fetch_rag_context,
 )
 
 
@@ -117,7 +118,17 @@ def write_section(state: SectionState):
                                                                        user_instructions=user_instructions, 
                                                                        source_urls=url_source_str)
 
-    section_content = model.invoke([SystemMessage(content=system_instructions)] + [HumanMessage(content="Write this chapter of the D&D campaign story with vivid descriptions, character details, and engaging narrative.")])
+    # Pull RAG context from TS service using the section topic as the query
+    rag_context = fetch_rag_context(section.description, top_k=5)
+
+    composite = system_instructions
+    if rag_context:
+        composite = f"{system_instructions}\n\n{rag_context}"
+
+    section_content = model.invoke([
+        SystemMessage(content=composite),
+        HumanMessage(content="Write this chapter of the D&D campaign story with vivid descriptions, character details, and engaging narrative.")
+    ])
     
     section.content = section_content.content
     
@@ -135,7 +146,16 @@ def write_final_sections(state: SectionState):
                                                                main_body_sections=state.blog_main_body_sections, 
                                                                source_urls=state.urls)
 
-    section_content = model.invoke([SystemMessage(content=system_instructions)] + [HumanMessage(content="Craft an epic prologue or epilogue for this D&D campaign story that sets the mood and engages the players.")])
+    # Also retrieve RAG context based on section description to ground intro/epilogue
+    rag_context = fetch_rag_context(section.description, top_k=5)
+    composite = system_instructions
+    if rag_context:
+        composite = f"{system_instructions}\n\n{rag_context}"
+
+    section_content = model.invoke([
+        SystemMessage(content=composite),
+        HumanMessage(content="Craft an epic prologue or epilogue for this D&D campaign story that sets the mood and engages the players.")
+    ])
     
     section.content = section_content.content
     

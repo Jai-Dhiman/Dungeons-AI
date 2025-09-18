@@ -1,4 +1,6 @@
 import os
+import json
+import urllib.request
 from langchain_community.document_loaders import WebBaseLoader
 from state import Section
 
@@ -59,7 +61,7 @@ def read_dictation_file(file_path: str) -> str:
     except Exception as e:
         print(f"Error reading file: {e}")
         return ""
-    
+
 def format_sections(sections: list[Section]) -> str:
     """Format a list of sections into a string"""
     formatted_str = ""
@@ -76,3 +78,28 @@ def format_sections(sections: list[Section]) -> str:
             {section.content if section.content else '[Not yet written]'}
             """
     return formatted_str
+
+def fetch_rag_context(query: str, top_k: int = 5) -> str:
+    """Call the local TS RAG service to retrieve context snippets for a query.
+    Returns a formatted string suitable for prompt injection.
+    """
+    base_url = os.environ.get("RAG_BASE_URL", "http://localhost:3001")
+    url = f"{base_url}/retrieve"
+    payload = {"query": query, "topK": top_k}
+    try:
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            contexts = data.get("contexts", [])
+            if not contexts:
+                return ""
+            parts = []
+            for i, c in enumerate(contexts, 1):
+                title = c.get("title") or "Untitled"
+                content = c.get("content") or ""
+                source = c.get("source") or ""
+                parts.append(f"Snippet {i} ({title})\nSource: {source}\n{content}")
+            return "RAG Context:\n---\n" + "\n\n---\n".join(parts) + "\n---"
+    except Exception as e:
+        print(f"Warning: RAG retrieval failed: {e}")
+        return ""
